@@ -1,0 +1,42 @@
+{
+  "name": "cycle-flyer",
+  "version": "0.0.1",
+  "description": "client webapp for bitFlyer by cycle.js",
+  "main": "srcElectron/index.js",
+  "scripts": {
+    "build": "node fuse",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "start": "node fuse.dev",
+    "start:electron": "electron-forge start --inspect-electron",
+    "deploy": "now --public --token=$NOW_TOKEN --prod -c && now-pipeline-prune",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "author": "unhappychoice",
+  "license": "MIT",
+  "dependencies": {
+    "@cycle/dom": "^23.1.0",
+    "@cycle/history": "^9.0.0",
+    "@cycle/html": "^3.4.0",
+    "@cycle/http": "15.4.0",
+    "@cycle/isolate": "^5.2.0",
+    "@cycle/run": "^5.7.0",
+    "@cycle/state": "^1.7.0",
+    "@cycle/storage": "^5.1.2",
+    "@types/socket.io-client": "^3.0.0",
+    "cyclic-router": "^6.0.0",
+    "hash.js": "^1.1.7",
+    "socket.io-client": "^4.6.1",
+    "stylus": "^0.59.0",
+    "switch-path": "^1.2.0",
+    "xstream": "11.x.x"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.5",
+    "@electron-forge/maker-deb": "^6.0.5",
+    "@electron-forge/maker-rpm": "^6.0.5",
+    "@electron-forge/maker-squirrel": "^6.0.5",
+    "@electron-forge/maker-zip": "^6.0.5",
+    "electron": "^23.1.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "fuse-box": "^3

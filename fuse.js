@@ -18,4 +18,4 @@ const fuse = FuseBox.init({
 });
 
 fuse.bundle('index').instructions('> index.ts');
-fuse.r
+fuse.run();
