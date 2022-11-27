@@ -30,4 +30,29 @@ export const Root = (sources: Sources): Sinks => {
     const routes$ = sources.router
         .define({
             "/": isolate(Trade, { "*": "trade" }),
-            "
+            "/setting": isolate(Setting, { "*": "setting" }),
+        })
+        .map((route: any) => route.value({...sources, router: sources.router.path(route.path)}));
+
+    const view$ = routes$.map((sinks: Sinks) => sinks.DOM).flatten()
+        .map((contentDOM: any) =>
+                div("#wrapper", [
+                    header(".header", [
+                        div(".header-wrapper", [
+                            h1(".header-title", "cycle-flyer"),
+                            a(".menu-trade", { props: { href: "/" } }, "Trade"),
+                            a(".menu-setting", { props: { href: "/setting" } }, "Setting"),
+                        ]),
+                    ]),
+                    div(".content", [contentDOM]),
+                ]),
+            );
+
+    return {
+        DOM: view$,
+        HTTP: routes$.map((sinks: Sinks) => sinks.HTTP).flatten(),
+        router: routes$.map((sinks: Sinks) => sinks.router).flatten(),
+        state: routes$.map((sinks: Sinks) => sinks.state).flatten(),
+        storage: routes$.map((sinks: Sinks) => sinks.storage).flatten(),
+    };
+};
