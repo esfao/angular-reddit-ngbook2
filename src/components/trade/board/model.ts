@@ -26,4 +26,32 @@ export const model = (actions: Actions): Stream<Reducer<State>> => {
         .map((price) => (state: State) => ({ ...state, price: ceilBy(price + 1, state.groupedSize) }));
 
     const boardReducer$ = actions.onBoardLoaded$
-        .map((board) => (state: State) => ({ ...state, board: state.board.merge(board.asks, board.b
+        .map((board) => (state: State) => ({ ...state, board: state.board.merge(board.asks, board.bids) }));
+
+    const boardSnapshotReducer$ = actions.onBoardSnapshotLoaded$
+        .map((board: Board) => (state: State) => ({ ...state, board }));
+
+    const groupedSizePlusReducer$ = actions.onClickGroupSizePlusButton$
+        .map((_) => (state: State) => ({ ...state, groupedSize: plusGroupedSizeFor(state.groupedSize) }));
+
+    const groupedSizeMinusReducer$ = actions.onClickGroupSizeMinusButton$
+        .map((_) => (state: State) => ({ ...state, groupedSize: minusGroupedSizeFor(state.groupedSize) }));
+
+    return Stream.merge(
+        defaultReducer$,
+        askPriceReducer$,
+        bidPriceReducer$,
+        boardReducer$,
+        boardSnapshotReducer$,
+        groupedSizeMinusReducer$,
+        groupedSizePlusReducer$,
+    ) as Stream<Reducer<State>>;
+};
+
+const groupSize: number[] = [1, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 25000, 50000];
+
+const plusGroupedSizeFor = (groupingSize: number): number =>
+    groupSize.filter((size: number) => size > groupingSize)[0] || groupingSize;
+
+const minusGroupedSizeFor = (groupingSize: number): number =>
+    groupSize.filter((size: number) => size < groupingSize).slice(-1)[0] || groupingSize;
