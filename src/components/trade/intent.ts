@@ -58,4 +58,36 @@ export const intent = (sources: Sources): Actions => {
         .events("click")
         .mapTo(null);
 
-    const onClickGroupSizeMinusButton$ = sources.DOM.select(".board-header").sele
+    const onClickGroupSizeMinusButton$ = sources.DOM.select(".board-header").select(".minus")
+        .events("click")
+        .mapTo(null);
+
+    const onClickMarketBuyButton$ = sources.DOM.select(".market-order-buttons").select(".buy-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    const onClickMarketSellButton$ = sources.DOM.select(".market-order-buttons").select(".sell-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    const onClickLimitBuyButton$ = sources.DOM.select(".limit-order-buttons").select(".buy-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    const onClickLimitSellButton$ = sources.DOM.select(".limit-order-buttons").select(".sell-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    const onExecutionCreated$ = sources.socket.execution$;
+
+    const onHistoryCreated$ = Stream.merge(
+        sources.HTTP.select("market-order").map((stream) => createHistoryStream("Market", stream)).flatten(),
+        sources.HTTP.select("limit-order").map((stream) => createHistoryStream("Limit", stream)).flatten(),
+        sources.HTTP.select("ifdoco-order").map((stream) => createIFDOCOHistoryStream(stream)).flatten(),
+    );
+
+    const onIFDOCOOrdersLoaded$ = sources.HTTP.select("parent-orders")
+        .map((response$) => response$.replaceError(() => Stream.never()))
+        .flatten()
+        .map((response) => JSON.parse(response.text))
+        .filter((orders) => orders.f
