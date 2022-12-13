@@ -120,4 +120,41 @@ export const intent = (sources: Sources): Actions => {
     ).map(([s1, s2]) => s1.concat(s2));
 
     const onPositionsLoaded$ = sources.HTTP.select("positions")
-        .map((response$) => response$.replaceErr
+        .map((response$) => response$.replaceError(() => Stream.never()))
+        .flatten()
+        .map((response) => JSON.parse(response.text))
+        .map((positions) => new Position(positions));
+
+    const onPriceChanged$ = sources.DOM.select("#price-input")
+        .events("keyup")
+        .map((event) => event.target as HTMLInputElement)
+        .map((element) => +element.value);
+
+    const onSizeChanged$ = sources.DOM.select("#size-input")
+        .events("keyup")
+        .map((event) => event.target as HTMLInputElement)
+        .map((element) => +element.value);
+
+    const onPriceWidthChanged$ = sources.DOM.select("#price-width-input")
+        .events("keyup")
+        .map((event) => event.target as HTMLInputElement)
+        .map((element) => +element.value);
+
+    const onRatioChanged$ = sources.DOM.select("#ratio-input")
+        .events("keyup")
+        .map((event) => event.target as HTMLInputElement)
+        .map((element) => +element.value);
+
+    const onClickIFDOCOBuyButton$ = sources.DOM.select(".ranged-ifdoco-order-buttons").select(".buy-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    const onClickIFDOCOSellButton$ = sources.DOM.select(".ranged-ifdoco-order-buttons").select(".sell-button")
+        .events("click", { preventDefault: true })
+        .mapTo(null);
+
+    return {
+        onApiKeyLoaded$,
+        onApiSecretLoaded$,
+        onCancelOrders$,
+        onClic
