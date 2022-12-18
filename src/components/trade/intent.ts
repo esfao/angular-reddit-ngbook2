@@ -196,4 +196,30 @@ const createIFDOCOHistoryStream = (stream$: MemoryStream<Response> & ResponseStr
     stream$
         .map((response: any) => {
             const send = JSON.parse(response.request.send);
-            const orderHistories: [OrderHistory] = send.parameters.map((order: any) =>
+            const orderHistories: [OrderHistory] = send.parameters.map((order: any) => {
+                const price = order.price || order.trigger_price;
+                return createOrderHistory(orderName(order.condition_type), order.side, order.size, price, "success");
+            });
+            return Stream.fromArray(orderHistories);
+        })
+        .replaceError((error: any) => {
+            const send = JSON.parse(error.response.request.send);
+            const orderHistories: [OrderHistory] = send.parameters.map((order: any) => {
+                const price = order.price || order.trigger_price;
+                return createOrderHistory(orderName(order.condition_type), order.side, order.size, price, "failed");
+            });
+            return Stream.of(Stream.fromArray(orderHistories));
+        })
+        .flatten();
+
+const orderName = (conditionType: string): string => {
+  if (conditionType === "MARKET") {
+      return "Market";
+  } else if (conditionType === "LIMIT") {
+      return "Limit";
+  } else if (conditionType === "STOP") {
+      return "Stop";
+  } else {
+      return "Undefined";
+  }
+};
