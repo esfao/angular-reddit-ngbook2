@@ -157,4 +157,43 @@ export const intent = (sources: Sources): Actions => {
         onApiKeyLoaded$,
         onApiSecretLoaded$,
         onCancelOrders$,
-        onClic
+        onClickClearButton$,
+        onClickClearOrderButton$,
+        onClickGroupSizeMinusButton$,
+        onClickGroupSizePlusButton$,
+        onClickIFDOCOBuyButton$,
+        onClickIFDOCOSellButton$,
+        onClickLimitBuyButton$,
+        onClickLimitSellButton$,
+        onClickMarketBuyButton$,
+        onClickMarketSellButton$,
+        onExecutionCreated$,
+        onHistoryCreated$,
+        onIFDOCOOrdersLoaded$,
+        onOrderCreated$,
+        onOrdersLoaded$,
+        onPositionsLoaded$,
+        onPriceChanged$,
+        onPriceWidthChanged$,
+        onRatioChanged$,
+        onSizeChanged$,
+        onStopOrdersLoaded$,
+    };
+};
+
+const createHistoryStream = (name: string, stream$: MemoryStream<Response> & ResponseStream): Stream<OrderHistory> =>
+    stream$
+        .map((response: any) => {
+            const send = JSON.parse(response.request.send);
+            return createOrderHistory(name, send.side, send.size, send.price, "success");
+        })
+        .replaceError((error) => {
+            const send = JSON.parse(error.response.request.send);
+            return Stream.of(createOrderHistory(name, send.side, send.size, send.price, "failed"));
+        });
+
+const createIFDOCOHistoryStream = (stream$: MemoryStream<Response> & ResponseStream): Stream<OrderHistory> =>
+    stream$
+        .map((response: any) => {
+            const send = JSON.parse(response.request.send);
+            const orderHistories: [OrderHistory] = send.parameters.map((order: any) =>
