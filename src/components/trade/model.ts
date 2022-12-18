@@ -43,4 +43,35 @@ export const model = (actions: Actions): Stream<Reducer<State>> => {
         actions.onHistoryCreated$.mapTo(false),
     ).map((isOrdering) => (state: State) => ({ ...state, isOrdering }));
 
-    const ordersRed
+    const ordersReducer$ = actions.onOrdersLoaded$
+        .map((orders: object[]) => orders.map((order) => new Order(order)))
+        .map((orders: Order[]) => (state: State) => ({ ...state, orders }));
+
+    const positionReducer$ = actions.onPositionsLoaded$
+        .map((position) => (state: State) => ({ ...state, position }));
+
+    const priceReducer$ = actions.onPriceChanged$
+        .map((price) => (state: State) => ({ ...state, price }));
+
+    const priceWidthReducer$ = actions.onPriceWidthChanged$
+        .map((price) => (state: State) => ({ ...state, ifdocoOrder: new IFDOCOrder(price, state.ifdocoOrder.ratio) }));
+
+    const ratioReducer$ = actions.onRatioChanged$
+        .map((ratio) => (state: State) => ({ ...state, ifdocoOrder: new IFDOCOrder(state.ifdocoOrder.width, ratio) }));
+
+    const sizeReducer$ = actions.onSizeChanged$
+        .map((size) => (state: State) => ({ ...state, size }));
+
+    const stopOrdersReducer$ = actions.onStopOrdersLoaded$
+        .map((stopOrders) => (state: State) => ({ ...state, stopOrders }));
+
+    const stopOrdersDeleteReducer$ = actions.onExecutionCreated$
+        .map((execution: any) => (state: State) => {
+            const stopOrders = state.stopOrders.filter((order) => !order.isExcuted(execution.price));
+            return { ...state, stopOrders };
+        });
+
+    return Stream.merge(
+        defaultReducer$,
+        cancelOrdersReducer$,
+        cur
