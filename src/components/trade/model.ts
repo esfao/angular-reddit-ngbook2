@@ -74,4 +74,16 @@ export const model = (actions: Actions): Stream<Reducer<State>> => {
     return Stream.merge(
         defaultReducer$,
         cancelOrdersReducer$,
-        cur
+        currentPriceReducer$,
+        historyReducer$,
+        isOrderingReducer$,
+        ordersReducer$,
+        positionReducer$,
+        priceReducer$,
+        priceWidthReducer$,
+        ratioReducer$,
+        sizeReducer$,
+        stopOrdersReducer$,
+        stopOrdersDeleteReducer$,
+    ) as Stream<Reducer<State>>;
+};
