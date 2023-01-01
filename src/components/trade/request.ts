@@ -63,4 +63,23 @@ export const request = (actions: Actions, state$: Stream<State>): Stream<string 
             ifdocoOrder(
                 state.ifdocoOrder.sellProfitLine(state.currentPrice),
                 state.ifdocoOrder.sellLossLine(state.currentPrice),
-         
+                state.size,
+                "SELL",
+            ),
+        );
+
+    return Stream.merge(
+        orders,
+        parentOrders,
+        positions,
+        marketBuy,
+        marketSell,
+        limitBuy,
+        limitSell,
+        ifdocoBuy,
+        ifdocoSell,
+        ifdocoOrders,
+        clear,
+        clearOrders,
+    ) as Stream<string | RequestInput | null>;
+};
