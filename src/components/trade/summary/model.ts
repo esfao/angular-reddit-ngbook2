@@ -16,4 +16,14 @@ export const model = (actions: Actions): Stream<Reducer<State>> => {
     const defaultReducer$ = Stream.of((state: State) => state || defaultState);
 
     const collateralReducer$ = actions.onCollateralLoaded$
-        .map((
+        .map((collateral) => (state: State) => ({ ...state, collateral }));
+
+    const marketStateReducer$ = actions.onStateLoaded$
+        .map((marketState) => (state: State) => ({ ...state, marketState}));
+
+    return Stream.merge(
+        collateralReducer$,
+        defaultReducer$,
+        marketStateReducer$,
+    ) as Stream<Reducer<State>>;
+};
