@@ -16,4 +16,38 @@ export const view = (state$: Stream<State>) =>
                 span(".unit", "JPY"),
             ]),
             div(".position-diff", [
-                span(".label", "P
+                span(".label", "Position diff"),
+                span(profitDifferenceClass(state), state.position.toDiffString(state.currentPrice)),
+                span(".unit", "JPY"),
+            ]),
+            div(".position-size", [
+                span(".label", "Position size"),
+                span(".number", state.position.toSizeString()),
+                span(".unit", "bFX"),
+            ]),
+            div(".profit", [
+                span(".label", "Profit / Loss"),
+                span(profitClass(state), state.position.toProfitString(state.currentPrice)),
+                span(".unit", "JPY"),
+            ]),
+            div(".collateral", [
+                span(".label", "Collateral"),
+                span(".number", collateralString(state)),
+                span(".unit", "JPY"),
+            ]),
+            hr(),
+            div(".market-state", [
+                span(".label", "Market state"),
+                span(healthClass(state.marketState.health), state.marketState.health),
+            ]),
+            div(".board-state", [
+                span(".label", "Board state"),
+                span(healthClass(state.marketState.state), state.marketState.state),
+            ]),
+            hr(),
+            ul(".histories", state.histories.map((history) =>
+                    li(".history", [
+                        span(
+                            history.status === "success" ? ".success" : ".failed",
+                            history.status === "success" ? "○" : "✗",
+                    
