@@ -50,4 +50,39 @@ export const view = (state$: Stream<State>) =>
                         span(
                             history.status === "success" ? ".success" : ".failed",
                             history.status === "success" ? "○" : "✗",
-                    
+                        ),
+                        span(".name", history.name),
+                        span(".description", history.description),
+                        span(".created-at", history.createdAt.toLocaleTimeString()),
+                    ]),
+                ),
+            ),
+        ]));
+
+const collateralString = (state: State): string => {
+    if (!state.position.price) { return state.collateral.toLocaleString(); }
+    const profit = state.position.profit(state.currentPrice);
+    return (state.collateral + profit).toLocaleString();
+};
+
+const profitClass = (state: State): string => {
+    if (!state.position.price) { return ".number"; }
+    if (state.position.side === "BUY") {
+        return state.currentPrice - state.position.price >= 0.0 ? ".number.plus" : ".number.minus";
+    } else {
+        return state.currentPrice - state.position.price >= 0.0 ? ".number.minus" : ".number.plus";
+    }
+};
+
+const profitDifferenceClass = (state: State): string => {
+    if (!state.position.price) { return ".number"; }
+    return state.currentPrice - state.position.price >= 0.0 ? ".number.plus" : ".number.minus";
+};
+
+const healthClass = (health: string): string => {
+    if (health === "NORMAL" || health === "RUNNING") {
+        return ".health.good";
+    } else {
+        return ".health.bad";
+    }
+};
