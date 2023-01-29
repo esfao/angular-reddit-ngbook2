@@ -26,4 +26,32 @@ export const view = (state$: Stream<State>, boardComponentDOM$: Stream<VNode>, s
                     h4(".sub-title", "Limit"),
                     div(".limit-order-buttons.order-buttons", [
                         input("#price-input", { attrs: { value: state.price }}),
-                        button(".sell-button", { attrs: { disabled: state.isOrdering || state.size === 0 
+                        button(".sell-button", { attrs: { disabled: state.isOrdering || state.size === 0 } }, "Sell"),
+                        button(".buy-button", { attrs: { disabled: state.isOrdering || state.size === 0 } }, "Buy"),
+                    ]),
+                    hr(),
+                    h4(".sub-title", "Clear position"),
+                    div(".order-buttons", [
+                        button(
+                            ".clear-button",
+                            { attrs: { disabled: state.isOrdering || state.position.size === 0 } },
+                            "Clear Position",
+                        ),
+                        button(
+                            ".clear-order-button",
+                            { attrs: { disabled: clearOrderButtonDisabled(state) } },
+                            "Clear Orders",
+                        ),
+                    ]),
+                    hr(),
+                    h4(".sub-title", "Ranged IFDOCO"),
+                    div(".line", [
+                        p(".line-number", [
+                            p(".buy", [
+                                label(".label.buy", "Buy"),
+                                span(".right", [
+                                    span(".profit", "+" + state.ifdocoOrder.profitDifference()),
+                                    span("/"),
+                                    span(".loss", "-" + state.ifdocoOrder.lossDifference()),
+                                    span(" ("),
+                                    span(".profit-line", state.ifdocoOrder.buyProfi
