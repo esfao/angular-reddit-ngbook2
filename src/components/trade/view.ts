@@ -54,4 +54,29 @@ export const view = (state$: Stream<State>, boardComponentDOM$: Stream<VNode>, s
                                     span("/"),
                                     span(".loss", "-" + state.ifdocoOrder.lossDifference()),
                                     span(" ("),
-                                    span(".profit-line", state.ifdocoOrder.buyProfi
+                                    span(".profit-line", state.ifdocoOrder.buyProfit(state.currentPrice, state.size)),
+                                    span("/"),
+                                    span(".loss-line", state.ifdocoOrder.buyLoss(state.currentPrice, state.size)),
+                                    span(")"),
+                                ]),
+                            ]),
+                            p(".sell", [
+                                label(".label.sell", "Sell"),
+                                span(".right", [
+                                    span(".profit", "-" + state.ifdocoOrder.profitDifference()),
+                                    span("/"),
+                                    span(".loss", "+" + state.ifdocoOrder.lossDifference()),
+                                    span(" ("),
+                                    span(".profit-line", state.ifdocoOrder.sellProfit(state.currentPrice, state.size)),
+                                    span("/"),
+                                    span(".loss-line", state.ifdocoOrder.sellLoss(state.currentPrice, state.size)),
+                                    span(")"),
+                                ]),
+                            ]),
+                        ]),
+                    ]),
+                    div(".price-width", [
+                        label(".label", "Price width"),
+                        input("#price-width-input", { attrs: { value: state.ifdocoOrder.width }}),
+                    ]),
+                    div(".ratio
