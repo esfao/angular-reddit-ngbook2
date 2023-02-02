@@ -15,4 +15,28 @@ export class SocketIOSource {
     public execution$: Stream<object> = Stream.create();
 
     private channelNames = [
-        
+        "lightning_board_snapshot_FX_BTC_JPY",
+        "lightning_board_FX_BTC_JPY",
+        "lightning_executions_FX_BTC_JPY",
+    ];
+
+    constructor(client: Socket) {
+        client.on("connect", () => {
+            this.channelNames.forEach((channelName) => client.emit("subscribe", channelName));
+        });
+
+        this.channelNames.forEach((channelName) => {
+            client.on(channelName, (message: any) => {
+                if (channelName === "lightning_board_snapshot_FX_BTC_JPY") {
+                    this.boardSnapshot$.shamefullySendNext(message);
+                } else if (channelName === "lightning_board_FX_BTC_JPY") {
+                    this.board$.shamefullySendNext(message);
+                } else if (channelName === "lightning_ticker_FX_BTC_JPY") {
+                    this.ticker$.shamefullySendNext(message);
+                } else if (channelName === "lightning_executions_FX_BTC_JPY") {
+                    message.forEach((m: any) => this.execution$.shamefullySendNext(m));
+                }
+            });
+        });
+    }
+}
