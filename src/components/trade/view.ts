@@ -79,4 +79,20 @@ export const view = (state$: Stream<State>, boardComponentDOM$: Stream<VNode>, s
                         label(".label", "Price width"),
                         input("#price-width-input", { attrs: { value: state.ifdocoOrder.width }}),
                     ]),
-                    div(".ratio
+                    div(".ratio", [
+                        label(".label", "Profit / Loss Ratio"),
+                        input("#ratio-input", { attrs: { value: state.ifdocoOrder.ratio }}),
+                    ]),
+                    div(".ranged-ifdoco-order-buttons.order-buttons", [
+                        button(".sell-button", { attrs: { disabled: tradeButtonDisabled(state) } }, "Sell"),
+                        button(".buy-button", { attrs: { disabled: tradeButtonDisabled(state) } }, "Buy"),
+                    ]),
+                ]),
+            ]),
+        );
+
+const clearOrderButtonDisabled = (state: State): boolean =>
+    state.isOrdering || (state.orders.length + state.stopOrders.length) === 0;
+
+const tradeButtonDisabled = (state: State): boolean =>
+    state.isOrdering || state.size === 0 || state.ifdocoOrder.width === 0;
