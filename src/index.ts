@@ -10,4 +10,10 @@ import {Root} from "./components";
 import {makeSocketIODriver} from "./drivers/socketIODriver";
 import "./index.styl";
 
-run(routerify(withState(Root), switchPath), 
+run(routerify(withState(Root), switchPath), {
+    DOM: makeDOMDriver("#app"),
+    HTTP: makeHTTPDriver(),
+    history: captureClicks(makeHistoryDriver()),
+    socket: makeSocketIODriver(),
+    storage: storageDriver,
+});
