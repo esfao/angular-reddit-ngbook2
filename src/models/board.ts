@@ -62,4 +62,20 @@ export class Board {
     private groupBy(boardOrders: BoardOrder[], priceSize: number, fn: (order: BoardOrder) => number): BoardOrder[] {
         const prices = boardOrders.reduce((acc: any, boardOrder: BoardOrder) => {
             const price = fn(boardOrder);
-            acc[price] = (acc[price] || 0) + boardOr
+            acc[price] = (acc[price] || 0) + boardOrder.size;
+            return acc;
+        }, []);
+        return this.mapToBoardOrder(priceSize, prices);
+    }
+
+    private mapToBoardOrder(priceSize: number, prices: any): BoardOrder[] {
+        if (priceSize > 99 && Object.keys(prices).length > 0) {
+            const min = Math.min.apply(null, Object.keys(prices).map((price) => +price));
+            const max = Math.max.apply(null, Object.keys(prices).map((price) => +price));
+            const keys = Array((max - min) / priceSize).fill(priceSize).map((value, index) => min + index * value);
+            return keys.map((key) => new BoardOrder({ price: +key, size: +(prices[key] || 0) }));
+        }
+
+        return Object.keys(prices).map((key) => new BoardOrder({ price: +key, size: +prices[key] }));
+    }
+}
