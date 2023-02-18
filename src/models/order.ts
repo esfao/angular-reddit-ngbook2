@@ -5,4 +5,7 @@ export class Order {
 
     constructor(json: any) {
         this.price = json.price;
-        thi
+        this.side = json.side;
+        this.size = json.size;
+    }
+}
