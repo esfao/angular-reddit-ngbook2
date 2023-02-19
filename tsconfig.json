@@ -17,4 +17,18 @@
     "skipLibCheck": false,
     "sourceMap": true,
     "declaration": true,
- 
+    "listFiles": false,
+    "traceResolution": false,
+    "newLine": "LF",
+    "noEmitOnError": true,
+    "inlineSources": true,
+    "listEmittedFiles": false
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
